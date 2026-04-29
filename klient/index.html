@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <title>Notatapplikasjon</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>Notatapplikasjon</h1>
+
+<div class="box">
+    <h2>Lag notat</h2>
+    <input id="title" placeholder="Tittel">
+    <textarea id="content" placeholder="Innhold"></textarea>
+    <button onclick="addNote()">Lag notat</button>
+</div>
+
+<div class="box">
+    <h2>Notater</h2>
+    <ul id="notes"></ul>
+</div>
+
+<hr>
+
+<div class="box">
+    <h2>Lag todo-liste</h2>
+    
+    <input id="todoTitle" placeholder="Tittel på liste">
+
+    <div class="task-input">
+        <input id="taskInput" placeholder="Oppgave">
+        <button onclick="addTask()">Legg til</button>
+    </div>
+
+    <ul id="taskList"></ul>
+
+    <button onclick="addTodo()">Lag todo-liste</button>
+</div>
+
+<div class="box">
+    <h2>Todo-lister</h2>
+    <ul id="todos"></ul>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
