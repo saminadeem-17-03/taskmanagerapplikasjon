@@ -4,29 +4,30 @@ body {
     max-width: 800px;
     margin: auto;
     padding: 20px;
-  }
-  
-  h1 {
+}
+
+h1 {
     text-align: center;
-  }
-  
-  .box {
+}
+
+.box {
     background: white;
     padding: 15px;
     margin-bottom: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  }
-  
-  input, textarea {
+}
+
+input, textarea, select {
     width: 100%;
     margin: 5px 0;
     padding: 8px;
     border-radius: 5px;
     border: 1px solid #ccc;
-  }
-  
-  button {
+    box-sizing: border-box;
+}
+
+button {
     margin-top: 5px;
     padding: 8px 12px;
     border: none;
@@ -34,29 +35,160 @@ body {
     color: white;
     border-radius: 5px;
     cursor: pointer;
-  }
-  
-  button:hover {
+}
+
+button:hover {
     background: #0056b3;
-  }
-  
-  li {
+}
+
+li {
     margin: 10px 0;
-    padding: 5px;
+    padding: 8px;
     border-bottom: 1px solid #ddd;
-  }
-  
-  .task-input {
+    list-style: none;
+}
+
+.oppgave-input {
     display: flex;
     gap: 10px;
-  }
-  
-  .task-input input {
+}
+
+.oppgave-input input {
     flex: 1;
-  }
-  
-  #taskList li {
+}
+
+#oppgaveListe li {
     background: #eee;
-    padding: 5px;
+    padding: 5px 8px;
     border-radius: 5px;
-  }
+}
+
+/* Toppbar med brukernavn og utlogging */
+#toppbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+#toppbar h1 {
+    margin: 0;
+    font-size: 22px;
+}
+
+#toppbar span {
+    margin-right: 10px;
+    color: #555;
+}
+
+/* Navigasjon */
+#navigasjon {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 20px;
+}
+
+.nav-knapp {
+    background: #e9e9e9;
+    color: #333;
+    border: 1px solid #ccc;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.nav-knapp:hover {
+    background: #ddd;
+}
+
+.nav-knapp.aktiv {
+    background: #007BFF;
+    color: white;
+    border-color: #007BFF;
+}
+
+/* Faner (innlogging/registrering) */
+.faner {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 15px;
+}
+
+.fane {
+    background: #e9e9e9;
+    color: #333;
+    border: 1px solid #ccc;
+}
+
+.fane.aktiv {
+    background: #007BFF;
+    color: white;
+    border-color: #007BFF;
+}
+
+/* Feilmeldinger */
+.feil { color: red; font-size: 13px; margin-top: 5px; }
+.ok { color: green; font-size: 13px; margin-top: 5px; }
+.grå-tekst { color: #888; font-size: 13px; }
+
+/* Ticket-status */
+.status-åpen { color: orange; font-weight: bold; }
+.status-under { color: #007BFF; font-weight: bold; }
+.status-lukket { color: green; font-weight: bold; }
+
+/* Badge på ticket-knapp */
+.teller {
+    background: red;
+    color: white;
+    border-radius: 10px;
+    padding: 1px 6px;
+    font-size: 12px;
+}
+
+/* Modal */
+#modal {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.modal-boks {
+    background: white;
+    padding: 25px;
+    border-radius: 8px;
+    max-width: 550px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.lukk-knapp {
+    position: absolute;
+    top: 10px; right: 10px;
+    background: #ccc;
+    color: #333;
+    padding: 4px 8px;
+    font-size: 13px;
+}
+
+/* Svar i modal */
+#svarListe li {
+    background: #f0f0f0;
+    border-radius: 5px;
+    border-bottom: none;
+}
+
+.eget-svar {
+    background: #e8f0ff !important;
+}

@@ -7,49 +7,138 @@
 </head>
 <body>
 
-    <h2>Login</h2>
-    <input id="username" placeholder="brukernavn">
-    <input id="password" placeholder="passord">
-    <button onclick="login()">Login</button>
-    <button onclick="register()">Registrer</button>
-    
-    <h2>Tickets</h2>
-    <ul id="tickets"></ul>
+<!-- INNLOGGINGSSIDE -->
+<div id="innloggingSide">
+    <h1>Notatapplikasjon</h1>
 
-<h1>Notatapplikasjon</h1>
+    <div class="box">
+        <div class="faner">
+            <button onclick="visFane('loggInn')" id="fanLoggInn" class="fane aktiv">Logg inn</button>
+            <button onclick="visFane('registrer')" id="fanRegistrer" class="fane">Registrer</button>
+        </div>
 
-<div class="box">
-    <h2>Lag notat</h2>
-    <input id="title" placeholder="Tittel">
-    <textarea id="content" placeholder="Innhold"></textarea>
-    <button onclick="addNote()">Lag notat</button>
+        <div id="loggInn">
+            <h2>Logg inn</h2>
+            <input id="innBrukernavn" placeholder="Brukernavn">
+            <input id="innPassord" type="password" placeholder="Passord">
+            <button onclick="loggInn()">Logg inn</button>
+            <p id="innFeil" class="feil"></p>
+        </div>
+
+        <div id="registrer" style="display:none">
+            <h2>Registrer ny bruker</h2>
+            <input id="regNavn" placeholder="Fullt navn">
+            <input id="regBrukernavn" placeholder="Brukernavn">
+            <input id="regPassord" type="password" placeholder="Passord">
+            <button onclick="registrer()">Opprett bruker</button>
+            <p id="regFeil" class="feil"></p>
+            <p id="regOK" class="ok"></p>
+        </div>
+    </div>
 </div>
 
-<div class="box">
-    <h2>Notater</h2>
-    <ul id="notes"></ul>
-</div>
+<!-- HOVED-APP (skjult til innlogging) -->
+<div id="appSide" style="display:none">
 
-<hr>
-
-<div class="box">
-    <h2>Lag todo-liste</h2>
-    
-    <input id="todoTitle" placeholder="Tittel på liste">
-
-    <div class="task-input">
-        <input id="taskInput" placeholder="Oppgave">
-        <button onclick="addTask()">Legg til</button>
+    <div id="toppbar">
+        <h1>Notatapplikasjon</h1>
+        <div>
+            <span id="velkomstTekst"></span>
+            <button onclick="loggUt()">Logg ut</button>
+        </div>
     </div>
 
-    <ul id="taskList"></ul>
+    <!-- Navigasjon -->
+    <div id="navigasjon">
+        <button onclick="visside('notater')" id="navNotater" class="nav-knapp aktiv">Notater</button>
+        <button onclick="visside('todos')" id="navTodos" class="nav-knapp">Todo-lister</button>
+        <button onclick="visside('tickets')" id="navTickets" class="nav-knapp">
+            Tickets <span id="ticketTeller" style="display:none" class="teller">0</span>
+        </button>
+    </div>
 
-    <button onclick="addTodo()">Lag todo-liste</button>
+    <!-- NOTATER -->
+    <div id="side-notater">
+        <div class="box">
+            <h2>Lag notat</h2>
+            <input id="notatTittel" placeholder="Tittel">
+            <textarea id="notatInnhold" placeholder="Innhold"></textarea>
+            <button onclick="leggTilNotat()">Lag notat</button>
+        </div>
+
+        <div class="box">
+            <h2>Mine notater</h2>
+            <ul id="notatListe"></ul>
+        </div>
+    </div>
+
+    <!-- TODO-LISTER -->
+    <div id="side-todos" style="display:none">
+        <div class="box">
+            <h2>Lag todo-liste</h2>
+            <input id="todoTittel" placeholder="Tittel på liste">
+            <div class="oppgave-input">
+                <input id="oppgaveInput" placeholder="Oppgave">
+                <button onclick="leggTilOppgave()">Legg til</button>
+            </div>
+            <ul id="oppgaveListe"></ul>
+            <button onclick="lagreTodo()">Lag todo-liste</button>
+        </div>
+
+        <div class="box">
+            <h2>Mine todo-lister</h2>
+            <ul id="todoListe"></ul>
+        </div>
+    </div>
+
+    <!-- TICKETS -->
+    <div id="side-tickets" style="display:none">
+        <div class="box">
+            <h2>Send ticket</h2>
+            <input id="ticketTittel" placeholder="Tittel">
+            <textarea id="ticketInnhold" placeholder="Beskrivelse"></textarea>
+            <select id="ticketMottaker">
+                <option value="">Velg mottaker...</option>
+            </select>
+            <button onclick="sendTicket()">Send ticket</button>
+        </div>
+
+        <div class="box">
+            <h2>Innboks</h2>
+            <ul id="innboks"></ul>
+        </div>
+
+        <div class="box">
+            <h2>Sendt</h2>
+            <ul id="sendt"></ul>
+        </div>
+    </div>
+
 </div>
 
-<div class="box">
-    <h2>Todo-lister</h2>
-    <ul id="todos"></ul>
+<!-- TICKET-MODAL (popup for å lese og svare) -->
+<div id="modal" style="display:none">
+    <div class="modal-boks">
+        <button onclick="lukkModal()" class="lukk-knapp">✕</button>
+        <h2 id="modalTittel"></h2>
+        <p id="modalInfo" class="grå-tekst"></p>
+        <p id="modalInnhold"></p>
+
+        <div style="margin: 10px 0">
+            <label>Status:</label>
+            <select id="modalStatus" onchange="endreStatus()">
+                <option value="åpen">Åpen</option>
+                <option value="under arbeid">Under arbeid</option>
+                <option value="lukket">Lukket</option>
+            </select>
+        </div>
+
+        <hr>
+        <h3>Svar</h3>
+        <ul id="svarListe"></ul>
+        <textarea id="svarInput" placeholder="Skriv svar..."></textarea>
+        <button onclick="sendSvar()">Send svar</button>
+    </div>
 </div>
 
 <script src="script.js"></script>
