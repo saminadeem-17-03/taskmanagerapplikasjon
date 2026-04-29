@@ -3,7 +3,7 @@ const fs = require('fs'); // File system → lese/skrive filer
 const cors = require('cors'); // Lar frontend snakke med backend
 
 const app = express(); // Lager Express-app
-const PORT = 3001; // Port serveren kjører på
+const PORT = 4000; // Port serveren kjører på
 
 app.use(express.json()); // Lar serveren lese JSON fra requests
 app.use(cors()); // Tillater requests fra frontend (annen origin)
