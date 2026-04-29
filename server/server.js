@@ -9,7 +9,7 @@ const PORT = 4000; // Port serveren kjører på
 
 app.use(express.json()); // Lar serveren lese JSON fra requests
 app.use(cors()); // Tillater requests fra frontend (annen origin)
-app.use(express.static(path.join(__dirname, "klient")));
+app.use(express.static(path.join(__dirname, "../klient")));
 
 
 // Leser JSON-fil (database)
