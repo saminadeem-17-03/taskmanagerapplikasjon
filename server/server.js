@@ -3,7 +3,7 @@ const fs = require('fs'); // File system → lese/skrive filer
 const cors = require('cors'); // Lar frontend snakke med backend
 
 const app = express(); // Lager Express-app
-const PORT = 3000; // Port serveren kjører på
+const PORT = 3001; // Port serveren kjører på
 
 app.use(express.json()); // Lar serveren lese JSON fra requests
 app.use(cors()); // Tillater requests fra frontend (annen origin)
@@ -118,5 +118,5 @@ app.delete('/todos/:todoId/tasks/:taskIndex', (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log("Server kjører på http://localhost:" + PORT);
+    console.log("Server kjører på http://192.168.30.84:" + PORT);
 });
