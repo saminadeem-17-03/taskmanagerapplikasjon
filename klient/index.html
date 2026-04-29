@@ -7,16 +7,21 @@
 </head>
 <body>
 
-<!-- INNLOGGINGSSIDE -->
+<!-- ======================================================
+     NY KODE (lagt til av AI): INNLOGGINGSSIDE
+     Vises når brukeren ikke er innlogget
+====================================================== -->
 <div id="innloggingSide">
     <h1>Notatapplikasjon</h1>
 
     <div class="box">
+        <!-- Faner for å bytte mellom innlogging og registrering -->
         <div class="faner">
             <button onclick="visFane('loggInn')" id="fanLoggInn" class="fane aktiv">Logg inn</button>
             <button onclick="visFane('registrer')" id="fanRegistrer" class="fane">Registrer</button>
         </div>
 
+        <!-- Innloggingsskjema -->
         <div id="loggInn">
             <h2>Logg inn</h2>
             <input id="innBrukernavn" placeholder="Brukernavn">
@@ -25,6 +30,7 @@
             <p id="innFeil" class="feil"></p>
         </div>
 
+        <!-- Registreringsskjema -->
         <div id="registrer" style="display:none">
             <h2>Registrer ny bruker</h2>
             <input id="regNavn" placeholder="Fullt navn">
@@ -36,19 +42,23 @@
         </div>
     </div>
 </div>
+<!-- SLUTT NY KODE: INNLOGGINGSSIDE -->
 
-<!-- HOVED-APP (skjult til innlogging) -->
+
+<!-- ======================================================
+     NY KODE (lagt til av AI): TOPPBAR MED BRUKERINFO
+====================================================== -->
 <div id="appSide" style="display:none">
 
     <div id="toppbar">
         <h1>Notatapplikasjon</h1>
         <div>
-            <span id="velkomstTekst"></span>
+            <span id="velkomstTekst"></span>    <!-- Viser "Hei, [navn]" -->
             <button onclick="loggUt()">Logg ut</button>
         </div>
     </div>
 
-    <!-- Navigasjon -->
+    <!-- Navigasjonsknapper mellom de tre sidene -->
     <div id="navigasjon">
         <button onclick="visside('notater')" id="navNotater" class="nav-knapp aktiv">Notater</button>
         <button onclick="visside('todos')" id="navTodos" class="nav-knapp">Todo-lister</button>
@@ -56,8 +66,13 @@
             Tickets <span id="ticketTeller" style="display:none" class="teller">0</span>
         </button>
     </div>
+<!-- SLUTT NY KODE: TOPPBAR -->
 
-    <!-- NOTATER -->
+
+    <!-- ======================================================
+         DIN OPPRINNELIGE KODE: NOTATER-SEKSJONEN
+         (Samme struktur som i din index.html)
+    ====================================================== -->
     <div id="side-notater">
         <div class="box">
             <h2>Lag notat</h2>
@@ -71,8 +86,13 @@
             <ul id="notatListe"></ul>
         </div>
     </div>
+    <!-- SLUTT DIN KODE: NOTATER -->
 
-    <!-- TODO-LISTER -->
+
+    <!-- ======================================================
+         DIN OPPRINNELIGE KODE: TODO-SEKSJONEN
+         (Samme struktur som i din index.html)
+    ====================================================== -->
     <div id="side-todos" style="display:none">
         <div class="box">
             <h2>Lag todo-liste</h2>
@@ -90,8 +110,12 @@
             <ul id="todoListe"></ul>
         </div>
     </div>
+    <!-- SLUTT DIN KODE: TODOS -->
 
-    <!-- TICKETS -->
+
+    <!-- ======================================================
+         NY KODE (lagt til av AI): TICKET-SEKSJONEN
+    ====================================================== -->
     <div id="side-tickets" style="display:none">
         <div class="box">
             <h2>Send ticket</h2>
@@ -113,10 +137,15 @@
             <ul id="sendt"></ul>
         </div>
     </div>
+    <!-- SLUTT NY KODE: TICKETS -->
 
 </div>
 
-<!-- TICKET-MODAL (popup for å lese og svare) -->
+
+<!-- ======================================================
+     NY KODE (lagt til av AI): TICKET-MODAL (popup)
+     Vises når brukeren klikker "Åpne" på en ticket
+====================================================== -->
 <div id="modal" style="display:none">
     <div class="modal-boks">
         <button onclick="lukkModal()" class="lukk-knapp">✕</button>
@@ -140,6 +169,7 @@
         <button onclick="sendSvar()">Send svar</button>
     </div>
 </div>
+<!-- SLUTT NY KODE: MODAL -->
 
 <script src="script.js"></script>
 </body>

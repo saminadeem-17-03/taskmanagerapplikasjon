@@ -1,194 +1,209 @@
+/* ======================================================
+   DIN OPPRINNELIGE KODE: Grunnstiler
+====================================================== */
+
 body {
-    font-family: Arial, sans-serif;
-    background: #f5f5f5;
-    max-width: 800px;
-    margin: auto;
-    padding: 20px;
+    font-family: Arial, sans-serif; /* Standard font */
+    background: #f5f5f5;            /* Lys grå bakgrunn */
+    max-width: 800px;               /* Maks bredde på innholdet */
+    margin: auto;                   /* Sentrer innholdet */
+    padding: 20px;                  /* Luft rundt innholdet */
 }
 
 h1 {
-    text-align: center;
+    text-align: center; /* Sentrerer overskriften */
 }
 
 .box {
-    background: white;
-    padding: 15px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    background: white;                      /* Hvit boks */
+    padding: 15px;                          /* Innvendig luft */
+    margin-bottom: 20px;                    /* Avstand mellom boksene */
+    border-radius: 8px;                     /* Avrundede hjørner */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Lett skygge */
 }
 
 input, textarea, select {
-    width: 100%;
-    margin: 5px 0;
-    padding: 8px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
+    width: 100%;             /* Full bredde */
+    margin: 5px 0;           /* Litt luft over og under */
+    padding: 8px;            /* Innvendig luft */
+    border-radius: 5px;      /* Avrundede hjørner */
+    border: 1px solid #ccc;  /* Grå kantlinje */
+    box-sizing: border-box;  /* Padding trekkes ikke fra bredden */
 }
 
 button {
-    margin-top: 5px;
-    padding: 8px 12px;
-    border: none;
-    background: #007BFF;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
+    margin-top: 5px;    /* Litt luft over knappen */
+    padding: 8px 12px;  /* Innvendig luft */
+    border: none;       /* Ingen kantlinje */
+    background: #007BFF; /* Blå bakgrunn */
+    color: white;       /* Hvit tekst */
+    border-radius: 5px; /* Avrundede hjørner */
+    cursor: pointer;    /* Hånd-ikon når man svever */
 }
 
 button:hover {
-    background: #0056b3;
+    background: #0056b3; /* Mørkere blå ved hover */
 }
 
 li {
-    margin: 10px 0;
-    padding: 8px;
-    border-bottom: 1px solid #ddd;
-    list-style: none;
+    margin: 10px 0;             /* Avstand mellom listeelementer */
+    padding: 8px;               /* Innvendig luft */
+    border-bottom: 1px solid #ddd; /* Tynn linje under hvert element */
+    list-style: none;           /* Fjerner standard punktmerke */
 }
 
 .oppgave-input {
-    display: flex;
-    gap: 10px;
+    display: flex; /* Legg input og knapp ved siden av hverandre */
+    gap: 10px;     /* Avstand mellom dem */
 }
 
 .oppgave-input input {
-    flex: 1;
+    flex: 1; /* Input tar all tilgjengelig plass */
 }
 
 #oppgaveListe li {
-    background: #eee;
-    padding: 5px 8px;
-    border-radius: 5px;
+    background: #eee;   /* Grå bakgrunn for midlertidige oppgaver */
+    padding: 5px 8px;   /* Innvendig luft */
+    border-radius: 5px; /* Avrundede hjørner */
 }
+/* SLUTT DIN OPPRINNELIGE KODE */
 
-/* Toppbar med brukernavn og utlogging */
+
+/* ======================================================
+   NY KODE (lagt til av AI): Toppbar, navigasjon, tickets
+====================================================== */
+
+/* Toppbar med tittel og utloggingsknapp */
 #toppbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: white;
-    padding: 10px 15px;
-    border-radius: 8px;
-    margin-bottom: 15px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    display: flex;                          /* Legg elementer side om side */
+    justify-content: space-between;        /* Tittel til venstre, knapp til høyre */
+    align-items: center;                   /* Sentrert vertikalt */
+    background: white;                     /* Hvit bakgrunn */
+    padding: 10px 15px;                    /* Innvendig luft */
+    border-radius: 8px;                    /* Avrundede hjørner */
+    margin-bottom: 15px;                   /* Avstand ned til neste element */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Lett skygge */
 }
 
 #toppbar h1 {
-    margin: 0;
-    font-size: 22px;
+    margin: 0;       /* Fjern standard margin */
+    font-size: 22px; /* Litt mindre enn standard h1 */
 }
 
 #toppbar span {
-    margin-right: 10px;
-    color: #555;
+    margin-right: 10px; /* Avstand mellom navn og utloggingsknapp */
+    color: #555;        /* Grå tekst */
 }
 
-/* Navigasjon */
+/* Navigasjonsknapper */
 #navigasjon {
-    display: flex;
-    gap: 5px;
-    margin-bottom: 20px;
+    display: flex;      /* Legg knapper side om side */
+    gap: 5px;           /* Avstand mellom knappene */
+    margin-bottom: 20px; /* Avstand ned til innholdet */
 }
 
 .nav-knapp {
-    background: #e9e9e9;
-    color: #333;
-    border: 1px solid #ccc;
-    padding: 8px 16px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
+    background: #e9e9e9;  /* Lys grå bakgrunn */
+    color: #333;          /* Mørk tekst */
+    border: 1px solid #ccc; /* Grå kantlinje */
+    padding: 8px 16px;    /* Innvendig luft */
+    border-radius: 5px;   /* Avrundede hjørner */
+    cursor: pointer;      /* Hånd-ikon */
+    font-size: 14px;      /* Litt mindre tekst */
 }
 
 .nav-knapp:hover {
-    background: #ddd;
+    background: #ddd; /* Mørkere grå ved hover */
 }
 
 .nav-knapp.aktiv {
-    background: #007BFF;
-    color: white;
-    border-color: #007BFF;
+    background: #007BFF;  /* Blå bakgrunn på aktiv side */
+    color: white;         /* Hvit tekst */
+    border-color: #007BFF; /* Blå kantlinje */
 }
 
-/* Faner (innlogging/registrering) */
+/* Faner for innlogging/registrering */
 .faner {
-    display: flex;
-    gap: 5px;
-    margin-bottom: 15px;
+    display: flex; /* Side om side */
+    gap: 5px;      /* Avstand mellom fanene */
+    margin-bottom: 15px; /* Avstand ned til skjema */
 }
 
 .fane {
-    background: #e9e9e9;
-    color: #333;
-    border: 1px solid #ccc;
+    background: #e9e9e9;   /* Grå inaktiv fane */
+    color: #333;           /* Mørk tekst */
+    border: 1px solid #ccc; /* Kantlinje */
 }
 
 .fane.aktiv {
-    background: #007BFF;
-    color: white;
-    border-color: #007BFF;
+    background: #007BFF; /* Blå aktiv fane */
+    color: white;        /* Hvit tekst */
+    border-color: #007BFF; /* Blå kantlinje */
 }
 
-/* Feilmeldinger */
-.feil { color: red; font-size: 13px; margin-top: 5px; }
-.ok { color: green; font-size: 13px; margin-top: 5px; }
-.grå-tekst { color: #888; font-size: 13px; }
+/* Tekst for feil- og suksessmeldinger */
+.feil { color: red;   font-size: 13px; margin-top: 5px; } /* Rød feilmelding */
+.ok   { color: green; font-size: 13px; margin-top: 5px; } /* Grønn suksessmelding */
+.grå-tekst { color: #888; font-size: 13px; }              /* Grå hjelpetekst */
 
-/* Ticket-status */
-.status-åpen { color: orange; font-weight: bold; }
-.status-under { color: #007BFF; font-weight: bold; }
-.status-lukket { color: green; font-weight: bold; }
+/* Farger på ticket-status */
+.status-åpen   { color: orange;   font-weight: bold; } /* Oransje = åpen */
+.status-under  { color: #007BFF; font-weight: bold; }  /* Blå = under arbeid */
+.status-lukket { color: green;    font-weight: bold; } /* Grønn = lukket */
 
-/* Badge på ticket-knapp */
+/* Tallmerke (badge) på ticket-knappen i nav */
 .teller {
-    background: red;
-    color: white;
-    border-radius: 10px;
-    padding: 1px 6px;
-    font-size: 12px;
+    background: red;     /* Rød bakgrunn */
+    color: white;        /* Hvit tekst */
+    border-radius: 10px; /* Oval form */
+    padding: 1px 6px;    /* Innvendig luft */
+    font-size: 12px;     /* Liten tekst */
 }
 
-/* Modal */
+/* Mørk bakgrunn bak modal */
 #modal {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 100;
+    position: fixed;             /* Fast posisjon, uavhengig av scroll */
+    top: 0; left: 0;             /* Starter øverst til venstre */
+    width: 100%; height: 100%;   /* Dekker hele skjermen */
+    background: rgba(0,0,0,0.5); /* Halvgjennomsiktig svart */
+    display: flex;               /* Brukes for å sentrere modal-boksen */
+    align-items: center;         /* Sentrert vertikalt */
+    justify-content: center;     /* Sentrert horisontalt */
+    z-index: 100;                /* Over alt annet innhold */
 }
 
+/* Selve modal-vinduet */
 .modal-boks {
-    background: white;
-    padding: 25px;
-    border-radius: 8px;
-    max-width: 550px;
-    width: 90%;
-    max-height: 80vh;
-    overflow-y: auto;
-    position: relative;
+    background: white;   /* Hvit boks */
+    padding: 25px;       /* Innvendig luft */
+    border-radius: 8px;  /* Avrundede hjørner */
+    max-width: 550px;    /* Maks bredde */
+    width: 90%;          /* Responsiv bredde */
+    max-height: 80vh;    /* Maks høyde (80% av skjermen) */
+    overflow-y: auto;    /* Scroll hvis innholdet er for langt */
+    position: relative;  /* Trengs for å posisjonere lukk-knappen */
 }
 
+/* Lukk-knapp (✕) øverst til høyre i modal */
 .lukk-knapp {
-    position: absolute;
-    top: 10px; right: 10px;
-    background: #ccc;
-    color: #333;
-    padding: 4px 8px;
-    font-size: 13px;
+    position: absolute; /* Posisjonert relativt til modal-boks */
+    top: 10px;          /* 10px fra toppen */
+    right: 10px;        /* 10px fra høyre kant */
+    background: #ccc;   /* Grå bakgrunn */
+    color: #333;        /* Mørk tekst */
+    padding: 4px 8px;   /* Liten knapp */
+    font-size: 13px;    /* Liten tekst */
 }
 
-/* Svar i modal */
+/* Svar-liste inne i modal */
 #svarListe li {
-    background: #f0f0f0;
-    border-radius: 5px;
-    border-bottom: none;
+    background: #f0f0f0; /* Lys grå bakgrunn */
+    border-radius: 5px;  /* Avrundede hjørner */
+    border-bottom: none; /* Ingen linje under (overstyrer standard li) */
 }
 
+/* Egne svar vises i blålig farge */
 .eget-svar {
-    background: #e8f0ff !important;
+    background: #e8f0ff !important; /* Blålig bakgrunn (! overstyrer over) */
 }
+/* SLUTT NY KODE */
