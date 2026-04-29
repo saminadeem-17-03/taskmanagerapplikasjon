@@ -1,7 +1,7 @@
 {
-  "name": "notatapplikasjon",
+  "name": "taskmanagerapplikasjon",
   "version": "2.0.0",
-  "description": "Notatapplikasjon med brukersystem og tickets",
+  "description": "taskmanagerapplikasjon med brukersystem og tickets",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
