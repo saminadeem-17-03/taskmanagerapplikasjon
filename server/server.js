@@ -1,12 +1,16 @@
 const express = require('express'); // Importerer Express (lager server)
 const fs = require('fs'); // File system → lese/skrive filer
 const cors = require('cors'); // Lar frontend snakke med backend
+const path = require("path");
+
 
 const app = express(); // Lager Express-app
 const PORT = 4000; // Port serveren kjører på
 
 app.use(express.json()); // Lar serveren lese JSON fra requests
 app.use(cors()); // Tillater requests fra frontend (annen origin)
+app.use(express.static(path.join(__dirname, "klient")));
+
 
 // Leser JSON-fil (database)
 function readDB() {
