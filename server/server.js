@@ -11,7 +11,7 @@ const SECRET = 'hemmelig_nokkel';
 
 app.use(express.json());
 app.use(cors());
-app.use(express.static(path.join(__dirname)));
+app.use(express.static(path.join(__dirname, "../klient")));
 
 // Les og skriv til database
 function readDB() {
