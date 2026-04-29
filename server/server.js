@@ -1,73 +1,105 @@
-const express = require('express'); // Importerer Express (lager server)
-const fs = require('fs'); // File system → lese/skrive filer
-const cors = require('cors'); // Lar frontend snakke med backend
+const express = require('express');
+const fs = require('fs');
+const cors = require('cors');
 const path = require("path");
 
+const app = express();
+const PORT = 4000;
 
-const app = express(); // Lager Express-app
-const PORT = 4000; // Port serveren kjører på
-
-app.use(express.json()); // Lar serveren lese JSON fra requests
-app.use(cors()); // Tillater requests fra frontend (annen origin)
+app.use(express.json());
+app.use(cors());
 app.use(express.static(path.join(__dirname, "../klient")));
 
-
-// Leser JSON-fil (database)
+// ===== DATABASE =====
 function readDB() {
-    return JSON.parse(fs.readFileSync('db.json')); // Leser fil og gjør om til JS-objekt
+    return JSON.parse(fs.readFileSync('db.json'));
 }
 
-// Skriver til JSON-fil
 function writeDB(data) {
-    fs.writeFileSync('db.json', JSON.stringify(data, null, 2)); // Lagrer data pent formatert
+    fs.writeFileSync('db.json', JSON.stringify(data, null, 2));
 }
 
-// Hent alle notater
-app.get('/notes', (req, res) => {
-    res.json(readDB().notes); // Sender notater som JSON
-});
+// ===== BRUKERSYSTEM =====
 
-// Opprett nytt notat
-app.post('/notes', (req, res) => {
-    const db = readDB(); // Leser database
-
-    const note = {
-        id: Date.now(), // Lager unik ID
-        title: req.body.title, // Data fra frontend
-        content: req.body.content
-    };
-
-    db.notes.push(note); // Legger til i array
-    writeDB(db); // Lagrer til fil
-
-    res.json(note); // Sender tilbake det nye notatet
-});
-
-// Slett notat
-app.delete('/notes/:id', (req, res) => {
+// Registrer bruker
+app.post("/register", (req, res) => {
     const db = readDB();
 
-    // Filtrerer bort notatet med riktig ID
-    db.notes = db.notes.filter(n => n.id != req.params.id);
+    const user = {
+        id: Date.now(),
+        username: req.body.username,
+        password: req.body.password
+    };
 
+    db.users.push(user);
     writeDB(db);
 
+    res.json(user);
+});
+
+// Login
+app.post("/login", (req, res) => {
+    const db = readDB();
+
+    const user = db.users.find(
+        u => u.username === req.body.username && u.password === req.body.password
+    );
+
+    if (!user) return res.status(401).json({ error: "Feil login" });
+
+    res.json(user);
+});
+
+// ===== NOTES (MED USER ID) =====
+
+// Hent kun brukerens notater
+app.get('/notes/:userId', (req, res) => {
+    const db = readDB();
+    const notes = db.notes.filter(n => n.userId == req.params.userId);
+    res.json(notes);
+});
+
+// Lag notat
+app.post('/notes', (req, res) => {
+    const db = readDB();
+
+    const note = {
+        id: Date.now(),
+        title: req.body.title,
+        content: req.body.content,
+        userId: req.body.userId // NYTT
+    };
+
+    db.notes.push(note);
+    writeDB(db);
+
+    res.json(note);
+});
+
+// Slett
+app.delete('/notes/:id', (req, res) => {
+    const db = readDB();
+    db.notes = db.notes.filter(n => n.id != req.params.id);
+    writeDB(db);
     res.json({ message: "Slettet" });
 });
 
-// Hent todos
-app.get('/todos', (req, res) => {
-    res.json(readDB().todos);
+// ===== TODOS (MED USER ID) =====
+
+app.get('/todos/:userId', (req, res) => {
+    const db = readDB();
+    const todos = db.todos.filter(t => t.userId == req.params.userId);
+    res.json(todos);
 });
 
-// Opprett todo
 app.post('/todos', (req, res) => {
     const db = readDB();
 
     const todo = {
-        id: Date.now(), // Unik ID
+        id: Date.now(),
         title: req.body.title,
-        tasks: req.body.tasks || [] // Hvis ingen tasks → tom liste
+        tasks: req.body.tasks || [],
+        userId: req.body.userId // NYTT
     };
 
     db.todos.push(todo);
@@ -76,51 +108,74 @@ app.post('/todos', (req, res) => {
     res.json(todo);
 });
 
-// Slett todo
 app.delete('/todos/:id', (req, res) => {
     const db = readDB();
-
     db.todos = db.todos.filter(t => t.id != req.params.id);
-
     writeDB(db);
-
-    res.json({ message: "Todo slettet" });
+    res.json({ message: "Slettet" });
 });
 
-// Toggle task (ferdig/ikke ferdig)
-app.patch('/todos/:todoId/tasks/:taskIndex', (req, res) => {
+// ===== TICKETS =====
+
+// Lag ticket
+app.post("/tickets", (req, res) => {
     const db = readDB();
 
-    const todo = db.todos.find(t => t.id == req.params.todoId); // Finn riktig todo
+    const ticket = {
+        id: Date.now(),
+        title: req.body.title,
+        content: req.body.content,
+        fromUser: req.body.fromUser,
+        toUser: req.body.toUser,
+        status: "åpen", // NYTT
+        messages: [] // svar
+    };
 
-    if (!todo) return res.status(404).json({ error: "Fant ikke todo" });
-
-    const task = todo.tasks[req.params.taskIndex]; // Finn task
-
-    if (!task) return res.status(404).json({ error: "Fant ikke task" });
-
-    task.done = !task.done; // Bytter true/false
-
+    db.tickets.push(ticket);
     writeDB(db);
 
-    res.json(task);
+    res.json(ticket);
 });
 
-// Slett task
-app.delete('/todos/:todoId/tasks/:taskIndex', (req, res) => {
+// Hent tickets for bruker
+app.get("/tickets/:userId", (req, res) => {
     const db = readDB();
 
-    const todo = db.todos.find(t => t.id == req.params.todoId);
+    const tickets = db.tickets.filter(
+        t => t.toUser == req.params.userId || t.fromUser == req.params.userId
+    );
 
-    if (!todo) return res.status(404).json({ error: "Fant ikke todo" });
+    res.json(tickets);
+});
 
-    todo.tasks.splice(req.params.taskIndex, 1); // Fjerner task fra array
+// Svar på ticket
+app.post("/tickets/:id/reply", (req, res) => {
+    const db = readDB();
+
+    const ticket = db.tickets.find(t => t.id == req.params.id);
+
+    ticket.messages.push({
+        text: req.body.text,
+        userId: req.body.userId
+    });
 
     writeDB(db);
 
-    res.json({ message: "Task slettet" });
+    res.json(ticket);
+});
+
+// Endre status
+app.patch("/tickets/:id/status", (req, res) => {
+    const db = readDB();
+
+    const ticket = db.tickets.find(t => t.id == req.params.id);
+    ticket.status = req.body.status;
+
+    writeDB(db);
+
+    res.json(ticket);
 });
 
 app.listen(PORT, () => {
-    console.log("Server kjører på http://192.168.20.84:" + PORT);
+    console.log("Server kjører på http://localhost:" + PORT);
 });

@@ -1,147 +1,124 @@
-const API = "http://192.168.20.84:4000"; // URL til backend-serveren (API)
+const API = "http://192.168.20.84:4000";
 
-async function getNotes() { // Henter alle notater fra backend
-    const res = await fetch(API + "/notes"); // Sender GET request til server
-    const data = await res.json(); // Gjør responsen om fra JSON til JS-objekt
+let currentUser = null; // NYTT
 
-    const list = document.getElementById("notes"); // Henter HTML-element der notater vises
-    list.innerHTML = ""; // Tømmer listen før vi legger til nye elementer
+// ===== LOGIN =====
+async function register() {
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
 
-    data.forEach(note => { // Går gjennom hvert notat
-        const li = document.createElement("li"); // Lager nytt listeelement
-
-        // Setter inn HTML med tittel, innhold og sletteknapp
-        li.innerHTML = `
-            <strong>${note.title}</strong><br>
-            ${note.content}
-            <button onclick="deleteNote(${note.id})">Slett</button>
-        `;
-
-        list.appendChild(li); // Legger elementet inn i lista
-    });
-}
-
-async function addNote() { // Legger til nytt notat
-    const title = document.getElementById("title").value; // Henter tittel fra inputfelt
-    const content = document.getElementById("content").value; // Henter innhold
-
-    await fetch(API + "/notes", { // Sender POST request til backend
-        method: "POST", // POST = opprette data
-        headers: { "Content-Type": "application/json" }, // Forteller at vi sender JSON
-        body: JSON.stringify({ title, content }) // Gjør JS-objekt om til JSON
-    });
-
-    getNotes(); // Oppdaterer listen etter at notatet er lagret
-}
-
-async function deleteNote(id) { // Sletter et notat basert på id
-    await fetch(API + "/notes/" + id, { method: "DELETE" }); // DELETE request
-    getNotes(); // Oppdaterer visningen
-}
-
-let tasks = []; // Midlertidig liste for tasks før de lagres i backend
-
-function addTask() { // Legger til en task i listen
-    const input = document.getElementById("taskInput"); // Henter inputfelt
-
-    if (!input.value) return; // Stopper hvis input er tom
-
-    // Legger til ny task i array
-    tasks.push({ text: input.value, done: false });
-
-    input.value = ""; // Tømmer inputfelt
-    renderTasks(); // Oppdaterer visning
-}
-
-function renderTasks() { // Viser tasks i frontend
-    const list = document.getElementById("taskList"); // Henter HTML liste
-    list.innerHTML = ""; // Tømmer listen
-
-    tasks.forEach(t => { // Går gjennom alle tasks
-        const li = document.createElement("li"); // Lager listeelement
-        li.innerText = t.text; // Setter tekst
-        list.appendChild(li); // Legger til i DOM
-    });
-}
-
-async function addTodo() { // Lager en todo-liste
-    const title = document.getElementById("todoTitle").value; // Henter tittel
-
-    if (!title || tasks.length === 0) return; // Stopper hvis tom
-
-    await fetch(API + "/todos", { // Sender POST request
+    await fetch(API + "/register", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, tasks }) // Sender tittel + tasks
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ username, password })
     });
 
-    tasks = []; // Tømmer midlertidig tasks
-    renderTasks(); // Oppdaterer visning
-    getTodos(); // Henter oppdaterte todos fra backend
+    alert("Bruker opprettet");
 }
 
-async function getTodos() { // Henter alle todo-lister
-    const res = await fetch(API + "/todos"); // GET request
-    const data = await res.json(); // JSON → JS
+async function login() {
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
 
-    const list = document.getElementById("todos"); // HTML container
-    list.innerHTML = ""; // Tømmer
+    const res = await fetch(API + "/login", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ username, password })
+    });
 
-    data.forEach(todo => { // Går gjennom todos
-        const li = document.createElement("li"); // Lager listeelement
+    const data = await res.json();
 
-        let tasksHTML = ""; // Lager HTML-streng for tasks
+    if (data.error) return alert("Feil login");
 
-        todo.tasks.forEach((t, index) => { // Går gjennom tasks
-            tasksHTML += `
-                <div>
-                    <input type="checkbox"
-                        ${t.done ? "checked" : ""} 
-                        onchange="toggleTask(${todo.id}, ${index})">
-                    
-                    ${t.done ? "<s>" + t.text + "</s>" : t.text}
+    currentUser = data; // lagrer bruker
+    loadData();
+}
 
-                    <button onclick="deleteTask(${todo.id}, ${index})">X</button>
-                </div>
-            `;
-        });
+// ===== NOTES =====
+async function getNotes() {
+    const res = await fetch(API + "/notes/" + currentUser.id);
+    const data = await res.json();
+
+    const list = document.getElementById("notes");
+    list.innerHTML = "";
+
+    data.forEach(note => {
+        const li = document.createElement("li");
 
         li.innerHTML = `
-            <strong>${todo.title}</strong>
-            <button onclick="deleteTodo(${todo.id})">Slett liste</button>
-            ${tasksHTML}
+        <strong>${note.title}</strong><br>
+        ${note.content}
+        <button onclick="deleteNote(${note.id})">Slett</button>
+        <button onclick="makeTicket('${note.title}', '${note.content}')">Lag ticket</button>
         `;
 
-        list.appendChild(li); // Legger til i DOM
+        list.appendChild(li);
     });
 }
 
-// Endrer status på en task (ferdig/ikke ferdig)
-async function toggleTask(todoId, taskIndex) {
-    await fetch(`${API}/todos/${todoId}/tasks/${taskIndex}`, {
-        method: "PATCH" // PATCH = oppdatere del av data
+async function addNote() {
+    const title = document.getElementById("title").value;
+    const content = document.getElementById("content").value;
+
+    await fetch(API + "/notes", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ title, content, userId: currentUser.id })
     });
 
-    getTodos(); // Oppdaterer visning
+    getNotes();
 }
 
-// Sletter en hel todo-liste
-async function deleteTodo(id) {
-    await fetch(API + "/todos/" + id, {
-        method: "DELETE"
+// ===== TICKETS =====
+async function makeTicket(title, content) {
+    const toUser = prompt("Send til userId:");
+
+    await fetch(API + "/tickets", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({
+            title,
+            content,
+            fromUser: currentUser.id,
+            toUser
+        })
     });
 
-    getTodos(); // Oppdaterer
+    alert("Ticket sendt");
 }
 
-// Sletter en enkelt task
-async function deleteTask(todoId, taskIndex) {
-    await fetch(`${API}/todos/${todoId}/tasks/${taskIndex}`, {
-        method: "DELETE"
+async function getTickets() {
+    const res = await fetch(API + "/tickets/" + currentUser.id);
+    const data = await res.json();
+
+    const list = document.getElementById("tickets");
+    list.innerHTML = "";
+
+    data.forEach(t => {
+        const li = document.createElement("li");
+
+        li.innerHTML = `
+        <strong>${t.title}</strong> (${t.status})<br>
+        ${t.content}
+        <button onclick="changeStatus(${t.id})">Lukk</button>
+        `;
+
+        list.appendChild(li);
+    });
+}
+
+async function changeStatus(id) {
+    await fetch(API + "/tickets/" + id + "/status", {
+        method: "PATCH",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ status: "lukket" })
     });
 
-    getTodos(); // Oppdaterer
+    getTickets();
 }
 
-getNotes(); // Henter notater når siden lastes
-getTodos(); // Henter todos når siden lastes
+// ===== LOAD =====
+function loadData() {
+    getNotes();
+    getTickets();
+}
