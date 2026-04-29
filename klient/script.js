@@ -1,4 +1,4 @@
-const API = "http://192.168.20.84:4000";
+const API = "http://localhost:4000";
 
 let åpenTicketId = null; // Holder styr på hvilken ticket som er åpen i modal
 let midlertidigOppgaver = []; // Oppgaver som ikke er lagret ennå
