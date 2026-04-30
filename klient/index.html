@@ -6,17 +6,14 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-<!-- Innloggingsside (vises når ikke innlogget) -->
+ 
 <div id="innloggingSide">
     <h1>Notatapplikasjon</h1>
-
     <div class="box">
         <div class="faner">
             <button onclick="visFane('loggInn')" id="fanLoggInn" class="fane aktiv">Logg inn</button>
             <button onclick="visFane('registrer')" id="fanRegistrer" class="fane">Registrer</button>
         </div>
-
         <div id="loggInn">
             <h2>Logg inn</h2>
             <input id="innBrukernavn" placeholder="Brukernavn">
@@ -24,7 +21,6 @@
             <button onclick="loggInn()">Logg inn</button>
             <p id="innFeil" class="feil"></p>
         </div>
-
         <div id="registrer" style="display:none">
             <h2>Registrer ny bruker</h2>
             <input id="regNavn" placeholder="Fullt navn">
@@ -36,10 +32,8 @@
         </div>
     </div>
 </div>
-
-<!-- Hoved-app (skjult til innlogging) -->
+ 
 <div id="appSide" style="display:none">
-
     <div id="toppbar">
         <h1>Notatapplikasjon</h1>
         <div>
@@ -47,14 +41,12 @@
             <button onclick="loggUt()">Logg ut</button>
         </div>
     </div>
-
-    <!-- Navigasjon mellom notater og todos -->
+ 
     <div id="navigasjon">
         <button onclick="visside('notater')" id="navNotater" class="nav-knapp aktiv">Notater</button>
         <button onclick="visside('todos')" id="navTodos" class="nav-knapp">Todo-lister</button>
     </div>
-
-    <!-- Notater-side -->
+ 
     <div id="side-notater">
         <div class="box">
             <h2>Lag notat</h2>
@@ -62,14 +54,12 @@
             <textarea id="notatInnhold" placeholder="Innhold"></textarea>
             <button onclick="leggTilNotat()">Lag notat</button>
         </div>
-
         <div class="box">
             <h2>Mine notater</h2>
             <ul id="notatListe"></ul>
         </div>
     </div>
-
-    <!-- Todo-side -->
+ 
     <div id="side-todos" style="display:none">
         <div class="box">
             <h2>Lag todo-liste</h2>
@@ -81,15 +71,14 @@
             <ul id="oppgaveListe"></ul>
             <button onclick="lagreTodo()">Lag todo-liste</button>
         </div>
-
         <div class="box">
             <h2>Mine todo-lister</h2>
             <ul id="todoListe"></ul>
         </div>
     </div>
-
 </div>
-
+ 
 <script src="script.js"></script>
 </body>
 </html>
+ 

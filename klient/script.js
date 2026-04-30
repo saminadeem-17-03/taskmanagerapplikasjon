@@ -2,8 +2,6 @@ const API = "http://192.168.20.117:4000";
 
 let midlertidigOppgaver = [];
 
-// -------------------- INNLOGGING --------------------
-
 async function loggInn() {
     const brukernavn = document.getElementById("innBrukernavn").value;
     const passord = document.getElementById("innPassord").value;
@@ -23,10 +21,11 @@ async function loggInn() {
 
     localStorage.setItem("token", data.token);
     localStorage.setItem("navn", data.navn);
+    localStorage.setItem("brukernavn", data.brukernavn);
+
     visApp();
 }
 
-// Registrering
 async function registrer() {
     const navn = document.getElementById("regNavn").value;
     const brukernavn = document.getElementById("regBrukernavn").value;
@@ -45,45 +44,42 @@ async function registrer() {
         return;
     }
 
-    document.getElementById("regOK").textContent = "Bruker opprettet!";
+    document.getElementById("regOK").textContent = "Bruker opprettet! Du kan nå logge inn.";
     visFane("loggInn");
 }
 
-// -------------------- LOGG UT --------------------
-
 function loggUt() {
     localStorage.clear();
-
-    document.getElementById("notatListe").innerHTML = "";
-    document.getElementById("todoListe").innerHTML = "";
-    document.getElementById("oppgaveListe").innerHTML = "";
-
-    midlertidigOppgaver = [];
-
-    visside("notater");
-
     document.getElementById("appSide").style.display = "none";
     document.getElementById("innloggingSide").style.display = "block";
+    document.getElementById("innBrukernavn").value = "";
+    document.getElementById("innPassord").value = "";
+    document.getElementById("innFeil").textContent = "";
 }
-
-// -------------------- NAVIGASJON --------------------
 
 function visFane(navn) {
     document.getElementById("loggInn").style.display = navn === "loggInn" ? "block" : "none";
     document.getElementById("registrer").style.display = navn === "registrer" ? "block" : "none";
-
     document.getElementById("fanLoggInn").classList.toggle("aktiv", navn === "loggInn");
     document.getElementById("fanRegistrer").classList.toggle("aktiv", navn === "registrer");
 }
-
-// -------------------- VIS APP --------------------
 
 function visApp() {
     document.getElementById("innloggingSide").style.display = "none";
     document.getElementById("appSide").style.display = "block";
     document.getElementById("velkomstTekst").textContent = "Hei, " + localStorage.getItem("navn");
-    hentNotater();
+
+    document.getElementById("notatListe").innerHTML = "";
+    document.getElementById("todoListe").innerHTML = "";
+
+    visside("notater");
 }
+
+window.onload = function() {
+    if (localStorage.getItem("token")) {
+        visApp();
+    }
+};
 
 function headers() {
     return {
@@ -92,32 +88,21 @@ function headers() {
     };
 }
 
-window.onload = function () {
-    if (localStorage.getItem("token")) visApp();
-};
-
-// -------------------- SIDE BYTTE --------------------
-
 function visside(side) {
     document.getElementById("side-notater").style.display = side === "notater" ? "block" : "none";
-    document.getElementById("side-todos").style.display = side === "todos" ? "block" : "none";
+    document.getElementById("side-todos").style.display   = side === "todos"   ? "block" : "none";
 
     document.getElementById("navNotater").classList.toggle("aktiv", side === "notater");
-    document.getElementById("navTodos").classList.toggle("aktiv", side === "todos");
+    document.getElementById("navTodos").classList.toggle("aktiv",   side === "todos");
 
-    if (side === "todos") hentTodos();
+    if (side === "notater") hentNotater();
+    if (side === "todos")   hentTodos();
 }
-
-// -------------------- NOTATER --------------------
 
 async function hentNotater() {
     const res = await fetch(API + "/notater", { headers: headers() });
-
-    // FIKSET: Sjekker at svaret er OK før vi leser JSON
-    // Uten denne ville res.json() krasje hvis serveren sendte HTML
-    if (!res.ok) return console.error("Kunne ikke hente notater");
-
     const data = await res.json();
+
     const liste = document.getElementById("notatListe");
     liste.innerHTML = "";
 
@@ -134,35 +119,26 @@ async function hentNotater() {
 }
 
 async function leggTilNotat() {
-    const tittel = document.getElementById("notatTittel").value;
+    const tittel  = document.getElementById("notatTittel").value;
     const innhold = document.getElementById("notatInnhold").value;
 
-    if (!tittel || !innhold) return alert("Fyll inn alt");
+    if (!tittel || !innhold) return alert("Fyll inn tittel og innhold");
 
-    const res = await fetch(API + "/notater", {
+    await fetch(API + "/notater", {
         method: "POST",
         headers: headers(),
         body: JSON.stringify({ tittel, innhold })
     });
 
-    // FIKSET: Sjekker at lagringen gikk bra før vi henter listen på nytt
-    if (!res.ok) return alert("Kunne ikke lagre notat");
-
-    await hentNotater(); // FIKSET: await så vi venter på oppdatert liste
+    document.getElementById("notatTittel").value  = "";
+    document.getElementById("notatInnhold").value = "";
+    hentNotater();
 }
 
 async function slettNotat(id) {
-    const res = await fetch(API + "/notater/" + id, {
-        method: "DELETE",
-        headers: headers()
-    });
-
-    if (!res.ok) return alert("Kunne ikke slette notat");
-
-    await hentNotater(); // FIKSET: await
+    await fetch(API + "/notater/" + id, { method: "DELETE", headers: headers() });
+    hentNotater();
 }
-
-// -------------------- TODOS --------------------
 
 function leggTilOppgave() {
     const input = document.getElementById("oppgaveInput");
@@ -176,7 +152,6 @@ function leggTilOppgave() {
 function visOppgaver() {
     const liste = document.getElementById("oppgaveListe");
     liste.innerHTML = "";
-
     midlertidigOppgaver.forEach(o => {
         const li = document.createElement("li");
         li.textContent = o.tekst;
@@ -186,30 +161,24 @@ function visOppgaver() {
 
 async function lagreTodo() {
     const tittel = document.getElementById("todoTittel").value;
+    if (!tittel || midlertidigOppgaver.length === 0) return alert("Legg til tittel og minst én oppgave");
 
-    if (!tittel || midlertidigOppgaver.length === 0)
-        return alert("Mangler data");
-
-    const res = await fetch(API + "/todos", {
+    await fetch(API + "/todos", {
         method: "POST",
         headers: headers(),
         body: JSON.stringify({ tittel, oppgaver: midlertidigOppgaver })
     });
 
-    // FIKSET: Sjekker at lagringen gikk bra
-    if (!res.ok) return alert("Kunne ikke lagre todo");
-
     midlertidigOppgaver = [];
     visOppgaver();
-    await hentTodos(); // FIKSET: await
+    document.getElementById("todoTittel").value = "";
+    hentTodos();
 }
 
 async function hentTodos() {
-    const res = await fetch(API + "/todos", { headers: headers() });
-
-    if (!res.ok) return console.error("Kunne ikke hente todos");
-
+    const res  = await fetch(API + "/todos", { headers: headers() });
     const data = await res.json();
+
     const liste = document.getElementById("todoListe");
     liste.innerHTML = "";
 
@@ -217,14 +186,14 @@ async function hentTodos() {
         const li = document.createElement("li");
 
         let oppgaverHTML = "";
-        todo.oppgaver.forEach(o => {
+        todo.oppgaver.forEach((o, index) => {
             oppgaverHTML += `
                 <div>
                     <input type="checkbox"
                         ${o.ferdig ? "checked" : ""}
-                        onchange="toggleOppgave(${todo.id}, ${o.id})">
+                        onchange="toggleOppgave(${todo.id}, ${index})">
                     ${o.ferdig ? "<s>" + o.tekst + "</s>" : o.tekst}
-                    <button onclick="slettOppgave(${todo.id}, ${o.id})">X</button>
+                    <button onclick="slettOppgave(${todo.id}, ${index})">X</button>
                 </div>
             `;
         });
@@ -238,26 +207,23 @@ async function hentTodos() {
     });
 }
 
-async function toggleOppgave(todoId, oppgaveId) {
-    await fetch(`${API}/todos/${todoId}/oppgaver/${oppgaveId}`, {
+async function toggleOppgave(todoId, index) {
+    await fetch(`${API}/todos/${todoId}/oppgaver/${index}`, {
         method: "PATCH",
         headers: headers()
     });
-    await hentTodos(); // FIKSET: await
+    hentTodos();
 }
 
 async function slettTodo(id) {
-    await fetch(API + "/todos/" + id, {
-        method: "DELETE",
-        headers: headers()
-    });
-    await hentTodos(); // FIKSET: await
+    await fetch(API + "/todos/" + id, { method: "DELETE", headers: headers() });
+    hentTodos();
 }
 
-async function slettOppgave(todoId, oppgaveId) {
-    await fetch(`${API}/todos/${todoId}/oppgaver/${oppgaveId}`, {
+async function slettOppgave(todoId, index) {
+    await fetch(`${API}/todos/${todoId}/oppgaver/${index}`, {
         method: "DELETE",
         headers: headers()
     });
-    await hentTodos(); // FIKSET: await
+    hentTodos();
 }
