@@ -18,30 +18,30 @@ const db = new Database('database.db'); // Åpner eller lager SQLite databasefil
 // Lager tabeller hvis de ikke finnes fra før
 db.exec(`
     CREATE TABLE IF NOT EXISTS brukere (
-        id INTEGER PRIMARY KEY AUTOINCREMENT, // Unik bruker-ID
-        navn TEXT NOT NULL, // Fullt navn
-        brukernavn TEXT UNIQUE NOT NULL, // Unikt brukernavn
-        passord TEXT NOT NULL // Hashet passord
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        navn TEXT NOT NULL,
+        brukernavn TEXT UNIQUE NOT NULL,
+        passord TEXT NOT NULL
     );
 
     CREATE TABLE IF NOT EXISTS notater (
-        id INTEGER PRIMARY KEY AUTOINCREMENT, // Notat-ID
-        bruker_id INTEGER NOT NULL, // Hvem notatet tilhører
-        tittel TEXT NOT NULL, // Tittel på notat
-        innhold TEXT NOT NULL // Selve innholdet
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        bruker_id INTEGER NOT NULL,
+        tittel TEXT NOT NULL,
+        innhold TEXT NOT NULL
     );
 
     CREATE TABLE IF NOT EXISTS todos (
-        id INTEGER PRIMARY KEY AUTOINCREMENT, // Todo-liste ID
-        bruker_id INTEGER NOT NULL, // Eieren av listen
-        tittel TEXT NOT NULL // Navn på todo-liste
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        bruker_id INTEGER NOT NULL,
+        tittel TEXT NOT NULL
     );
 
     CREATE TABLE IF NOT EXISTS oppgaver (
-        id INTEGER PRIMARY KEY AUTOINCREMENT, // Oppgave-ID
-        todo_id INTEGER NOT NULL, // Hvilken todo den tilhører
-        tekst TEXT NOT NULL, // Oppgavetekst
-        ferdig INTEGER DEFAULT 0 // 0 = ikke ferdig, 1 = ferdig
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        todo_id INTEGER NOT NULL,
+        tekst TEXT NOT NULL,
+        ferdig INTEGER DEFAULT 0
     );
 `);
 
