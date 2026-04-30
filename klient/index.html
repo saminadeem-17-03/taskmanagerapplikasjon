@@ -38,41 +38,81 @@
             </div>
         </div>
     </div>
-  <!-- lage notat -->   
-<div class="box">
-    <h2>Lag notat</h2>
-    <input id="title" placeholder="Tittel">
-    <textarea id="content" placeholder="Innhold"></textarea>
-    <button onclick="addNote()">Lag notat</button>
-</div>
+    <div id="side-notater">
+        <div class="box">
+            <h2>Lag notat</h2>
+            <input id="notatTittel" placeholder="Tittel">
+            <textarea id="notatInnhold" placeholder="Innhold"></textarea>
+            <button onclick="leggTilNotat()">Lag notat</button>
+        </div>
 
-<div class="box">
-    <h2>Notater</h2>
-    <ul id="notes"></ul>
-</div>
-
-<hr>
-
-<div class="box">
-    <h2>Lag todo-liste</h2>
-    
-    <input id="todoTitle" placeholder="Tittel på liste">
-
-    <div class="task-input">
-        <input id="taskInput" placeholder="Oppgave">
-        <button onclick="addTask()">Legg til</button>
+        <div class="box">
+            <h2>Mine notater</h2>
+            <ul id="notatListe"></ul>
+        </div>
     </div>
+    <div id="side-todos" style="display:none">
+        <div class="box">
+            <h2>Lag todo-liste</h2>
+            <input id="todoTittel" placeholder="Tittel på liste">
+            <div class="oppgave-input">
+                <input id="oppgaveInput" placeholder="Oppgave">
+                <button onclick="leggTilOppgave()">Legg til</button>
+            </div>
+            <ul id="oppgaveListe"></ul>
+            <button onclick="lagreTodo()">Lag todo-liste</button>
+        </div>
 
-    <ul id="taskList"></ul>
+        <div class="box">
+            <h2>Mine todo-lister</h2>
+            <ul id="todoListe"></ul>
+        </div>
+    </div>
+    <div id="side-tickets" style="display:none">
+        <div class="box">
+            <h2>Send ticket</h2>
+            <input id="ticketTittel" placeholder="Tittel">
+            <textarea id="ticketInnhold" placeholder="Beskrivelse"></textarea>
+            <select id="ticketMottaker">
+                <option value="">Velg mottaker...</option>
+            </select>
+            <button onclick="sendTicket()">Send ticket</button>
+        </div>
 
-    <button onclick="addTodo()">Lag todo-liste</button>
+        <div class="box">
+            <h2>Innboks</h2>
+            <ul id="innboks"></ul>
+        </div>
+
+        <div class="box">
+            <h2>Sendt</h2>
+            <ul id="sendt"></ul>
+        </div>
+    </div>
 </div>
+<div id="modal" style="display:none">
+    <div class="modal-boks">
+        <button onclick="lukkModal()" class="lukk-knapp">✕</button>
+        <h2 id="modalTittel"></h2>
+        <p id="modalInfo" class="grå-tekst"></p>
+        <p id="modalInnhold"></p>
 
-<div class="box">
-    <h2>Todo-lister</h2>
-    <ul id="todos"></ul>
+        <div style="margin: 10px 0">
+            <label>Status:</label>
+            <select id="modalStatus" onchange="endreStatus()">
+                <option value="åpen">Åpen</option>
+                <option value="under arbeid">Under arbeid</option>
+                <option value="lukket">Lukket</option>
+            </select>
+        </div>
+
+        <hr>
+        <h3>Svar</h3>
+        <ul id="svarListe"></ul>
+        <textarea id="svarInput" placeholder="Skriv svar..."></textarea>
+        <button onclick="sendSvar()">Send svar</button>
+    </div>
 </div>
-
 <script src="script.js"></script>
 </body>
 </html>
