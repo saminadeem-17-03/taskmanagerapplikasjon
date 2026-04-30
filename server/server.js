@@ -11,7 +11,7 @@ const SECRET = 'hemmelig_nokkel'; // Nøkkel for JWT
 
 app.use(express.json()); // Leser JSON fra forespørsler
 app.use(cors()); // Tillater alle origins
-app.use(express.static(path.join(__dirname))); // Serverer HTML/CSS/JS
+app.use(express.static(path.join(__dirname, '../klient'))); // Serverer HTML/CSS/JS
 
 const db = new Database('database.db'); // Åpner/lager databasefilen
 
@@ -151,4 +151,4 @@ app.delete('/todos/:todoId/oppgaver/:id', sjekkToken, (req, res) => {
     res.json({ melding: 'Slettet' }); // Bekrefter
 });
 
-app.listen(PORT, () => console.log('Server kjører på http://localhost:' + PORT)); // Starter serveren
+app.listen(PORT, () => console.log('Server kjører på http://192.168.20.117:4000:' + PORT)); // Starter serveren
