@@ -1,174 +1,231 @@
 const API = "http://192.168.20.117:4000"; // URL til backend-serveren (API)
 
+let midlertidigOppgaver = []; // Oppgaver som ikke er lagret ennå
+
+// --- INNLOGGING OG REGISTRERING ---
+
 async function loggInn() {
-    const brukernavn = document.getElementById("innBrukernavn").value; // Henter brukernavnet fra input
-    const passord = document.getElementById("innPassord").value; // Henter passordet fra input
- 
-    const res = await fetch(API + "/login", { // Sender POST til backend
+    const brukernavn = document.getElementById("innBrukernavn").value; // Henter brukernavn
+    const passord = document.getElementById("innPassord").value; // Henter passord
+
+    const res = await fetch(API + "/login", { // Sender til backend
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ brukernavn, passord }) // Sender brukernavn og passord som JSON
+        body: JSON.stringify({ brukernavn, passord })
     });
- 
-    const data = await res.json(); // Leser svaret fra serveren
- 
-    if (!res.ok) { // Hvis noe gikk galt
-        document.getElementById("innFeil").textContent = data.error; // Viser feilmeldingen
+
+    const data = await res.json(); // Leser svaret
+
+    if (!res.ok) {
+        document.getElementById("innFeil").textContent = data.error; // Viser feilmelding
         return;
     }
- 
-    // Lagrer token og brukerinfo i nettleseren
-    localStorage.setItem("token", data.token); // Lagrer JWT-token
-    localStorage.setItem("navn", data.navn); // Lagrer visningsnavn
-    localStorage.setItem("brukernavn", data.brukernavn); // Lagrer brukernavn
- 
-    visApp(); // Viser hoved-appen
+
+    localStorage.setItem("token", data.token); // Lagrer token
+    localStorage.setItem("navn", data.navn); // Lagrer navn
+
+    visApp(); // Viser appen
 }
 
+async function registrer() {
+    const navn = document.getElementById("regNavn").value; // Henter navn
+    const brukernavn = document.getElementById("regBrukernavn").value; // Henter brukernavn
+    const passord = document.getElementById("regPassord").value; // Henter passord
 
-
-async function getNotes() { // Henter alle notater fra backend
-    const res = await fetch(API + "/notes"); // Sender GET request til server
-    const data = await res.json(); // Gjør responsen om fra JSON til JS-objekt
-
-    const list = document.getElementById("notes"); // Henter HTML-element der notater vises
-    list.innerHTML = ""; // Tømmer listen før vi legger til nye elementer
-
-    data.forEach(note => { // Går gjennom hvert notat
-        const li = document.createElement("li"); // Lager nytt listeelement
-
-        // Setter inn HTML med tittel, innhold og sletteknapp
-        li.innerHTML = `
-            <strong>${note.title}</strong><br>
-            ${note.content}
-            <button onclick="deleteNote(${note.id})">Slett</button>
-        `;
-
-        list.appendChild(li); // Legger elementet inn i lista
-    });
-}
-
-async function addNote() { // Legger til nytt notat
-    const title = document.getElementById("title").value; // Henter tittel fra inputfelt
-    const content = document.getElementById("content").value; // Henter innhold
-
-    await fetch(API + "/notes", { // Sender POST request til backend
-        method: "POST", // POST = opprette data
-        headers: { "Content-Type": "application/json" }, // Forteller at vi sender JSON
-        body: JSON.stringify({ title, content }) // Gjør JS-objekt om til JSON
-    });
-
-    getNotes(); // Oppdaterer listen etter at notatet er lagret
-}
-
-async function deleteNote(id) { // Sletter et notat basert på id
-    await fetch(API + "/notes/" + id, { method: "DELETE" }); // DELETE request
-    getNotes(); // Oppdaterer visningen
-}
-
-let tasks = []; // Midlertidig liste for tasks før de lagres i backend
-
-function addTask() { // Legger til en task i listen
-    const input = document.getElementById("taskInput"); // Henter inputfelt
-
-    if (!input.value) return; // Stopper hvis input er tom
-
-    // Legger til ny task i array
-    tasks.push({ text: input.value, done: false });
-
-    input.value = ""; // Tømmer inputfelt
-    renderTasks(); // Oppdaterer visning
-}
-
-function renderTasks() { // Viser tasks i frontend
-    const list = document.getElementById("taskList"); // Henter HTML liste
-    list.innerHTML = ""; // Tømmer listen
-
-    tasks.forEach(t => { // Går gjennom alle tasks
-        const li = document.createElement("li"); // Lager listeelement
-        li.innerText = t.text; // Setter tekst
-        list.appendChild(li); // Legger til i DOM
-    });
-}
-
-async function addTodo() { // Lager en todo-liste
-    const title = document.getElementById("todoTitle").value; // Henter tittel
-
-    if (!title || tasks.length === 0) return; // Stopper hvis tom
-
-    await fetch(API + "/todos", { // Sender POST request
+    const res = await fetch(API + "/register", { // Sender til backend
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, tasks }) // Sender tittel + tasks
+        body: JSON.stringify({ navn, brukernavn, passord })
     });
 
-    tasks = []; // Tømmer midlertidig tasks
-    renderTasks(); // Oppdaterer visning
-    getTodos(); // Henter oppdaterte todos fra backend
+    const data = await res.json(); // Leser svaret
+
+    if (!res.ok) {
+        document.getElementById("regFeil").textContent = data.error; // Viser feilmelding
+        return;
+    }
+
+    document.getElementById("regOK").textContent = "Bruker opprettet! Du kan nå logge inn."; // Suksess
+    visFane("loggInn"); // Bytter til innloggingsfanen
 }
 
-async function getTodos() { // Henter alle todo-lister
-    const res = await fetch(API + "/todos"); // GET request
-    const data = await res.json(); // JSON → JS
+function loggUt() {
+    localStorage.clear(); // Fjerner token og navn
 
-    const list = document.getElementById("todos"); // HTML container
-    list.innerHTML = ""; // Tømmer
+    // Tømmer listene så forrige brukers data ikke vises
+    document.getElementById("notatListe").innerHTML = "";
+    document.getElementById("todoListe").innerHTML = "";
+    midlertidigOppgaver = [];
+    document.getElementById("oppgaveListe").innerHTML = "";
 
-    data.forEach(todo => { // Går gjennom todos
+    // Nullstiller innloggingsfelter
+    document.getElementById("innBrukernavn").value = "";
+    document.getElementById("innPassord").value = "";
+    document.getElementById("innFeil").textContent = "";
+
+    visside("notater"); // Tilbakestiller til notater-siden
+
+    document.getElementById("appSide").style.display = "none"; // Skjuler appen
+    document.getElementById("innloggingSide").style.display = "block"; // Viser innlogging
+}
+
+function visFane(navn) {
+    document.getElementById("loggInn").style.display = navn === "loggInn" ? "block" : "none"; // Viser/skjuler logg inn
+    document.getElementById("registrer").style.display = navn === "registrer" ? "block" : "none"; // Viser/skjuler registrer
+    document.getElementById("fanLoggInn").classList.toggle("aktiv", navn === "loggInn"); // Markerer aktiv fane
+    document.getElementById("fanRegistrer").classList.toggle("aktiv", navn === "registrer"); // Markerer aktiv fane
+}
+
+function visApp() {
+    document.getElementById("innloggingSide").style.display = "none"; // Skjuler innlogging
+    document.getElementById("appSide").style.display = "block"; // Viser appen
+    document.getElementById("velkomstTekst").textContent = "Hei, " + localStorage.getItem("navn"); // Viser navn
+
+    hentNotater(); // Laster notater
+}
+
+// Lager headers med token for alle innloggede kall
+function headers() {
+    return {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + localStorage.getItem("token") // Legger ved token
+    };
+}
+
+// Sjekker ved sidelast om brukeren allerede er innlogget
+window.onload = function() {
+    if (localStorage.getItem("token")) visApp(); // Hopper rett til appen
+};
+
+function visside(side) {
+    document.getElementById("side-notater").style.display = side === "notater" ? "block" : "none"; // Viser/skjuler notater
+    document.getElementById("side-todos").style.display = side === "todos" ? "block" : "none"; // Viser/skjuler todos
+    document.getElementById("navNotater").classList.toggle("aktiv", side === "notater"); // Markerer aktiv knapp
+    document.getElementById("navTodos").classList.toggle("aktiv", side === "todos"); // Markerer aktiv knapp
+    if (side === "todos") hentTodos(); // Laster todos når siden vises
+}
+
+// --- NOTATER ---
+
+async function hentNotater() {
+    const res = await fetch(API + "/notater", { headers: headers() }); // Henter egne notater
+    const data = await res.json(); // Gjør om til JS-array
+
+    const liste = document.getElementById("notatListe"); // Henter HTML-listen
+    liste.innerHTML = ""; // Tømmer listen
+
+    data.forEach(notat => { // Går gjennom hvert notat
         const li = document.createElement("li"); // Lager listeelement
+        li.innerHTML = `
+            <strong>${notat.tittel}</strong><br>
+            ${notat.innhold}
+            <br>
+            <button onclick="slettNotat(${notat.id})">Slett</button>
+        `;
+        liste.appendChild(li); // Legger til i listen
+    });
+}
 
-        let tasksHTML = ""; // Lager HTML-streng for tasks
+async function leggTilNotat() {
+    const tittel = document.getElementById("notatTittel").value; // Henter tittel
+    const innhold = document.getElementById("notatInnhold").value; // Henter innhold
 
-        todo.tasks.forEach((t, index) => { // Går gjennom tasks
-            tasksHTML += `
+    if (!tittel || !innhold) return alert("Fyll inn tittel og innhold"); // Validering
+
+    await fetch(API + "/notater", { // Sender til backend
+        method: "POST",
+        headers: headers(),
+        body: JSON.stringify({ tittel, innhold })
+    });
+
+    document.getElementById("notatTittel").value = ""; // Tømmer felt
+    document.getElementById("notatInnhold").value = ""; // Tømmer felt
+    hentNotater(); // Oppdaterer listen
+}
+
+async function slettNotat(id) {
+    await fetch(API + "/notater/" + id, { method: "DELETE", headers: headers() }); // Sletter notatet
+    hentNotater(); // Oppdaterer listen
+}
+
+// --- TODO-LISTER ---
+
+function leggTilOppgave() {
+    const input = document.getElementById("oppgaveInput"); // Henter input
+    if (!input.value) return; // Stopper hvis tom
+
+    midlertidigOppgaver.push({ tekst: input.value, ferdig: false }); // Legger til i array
+    input.value = ""; // Tømmer input
+    visOppgaver(); // Oppdaterer visningen
+}
+
+function visOppgaver() {
+    const liste = document.getElementById("oppgaveListe"); // Henter listen
+    liste.innerHTML = ""; // Tømmer listen
+    midlertidigOppgaver.forEach(o => { // Går gjennom oppgavene
+        const li = document.createElement("li");
+        li.textContent = o.tekst; // Setter tekst
+        liste.appendChild(li);
+    });
+}
+
+async function lagreTodo() {
+    const tittel = document.getElementById("todoTittel").value; // Henter tittel
+    if (!tittel || midlertidigOppgaver.length === 0) return alert("Legg til tittel og minst én oppgave"); // Validering
+
+    await fetch(API + "/todos", { // Sender til backend
+        method: "POST",
+        headers: headers(),
+        body: JSON.stringify({ tittel, oppgaver: midlertidigOppgaver })
+    });
+
+    midlertidigOppgaver = []; // Tømmer midlertidig array
+    visOppgaver(); // Tømmer visningen
+    document.getElementById("todoTittel").value = ""; // Tømmer felt
+    hentTodos(); // Oppdaterer listen
+}
+
+async function hentTodos() {
+    const res = await fetch(API + "/todos", { headers: headers() }); // Henter egne todos
+    const data = await res.json(); // Gjør om til JS-array
+
+    const liste = document.getElementById("todoListe"); // Henter HTML-listen
+    liste.innerHTML = ""; // Tømmer listen
+
+    data.forEach(todo => { // Går gjennom hver todo
+        const li = document.createElement("li");
+
+        let oppgaverHTML = ""; // Bygger HTML for oppgavene
+        todo.oppgaver.forEach(o => { // Går gjennom oppgavene
+            oppgaverHTML += `
                 <div>
-                    <input type="checkbox"
-                        ${t.done ? "checked" : ""} 
-                        onchange="toggleTask(${todo.id}, ${index})">
-                    
-                    ${t.done ? "<s>" + t.text + "</s>" : t.text}
-
-                    <button onclick="deleteTask(${todo.id}, ${index})">X</button>
+                    <input type="checkbox" ${o.ferdig ? "checked" : ""} onchange="toggleOppgave(${todo.id}, ${o.id})">
+                    ${o.ferdig ? "<s>" + o.tekst + "</s>" : o.tekst}
+                    <button onclick="slettOppgave(${todo.id}, ${o.id})">X</button>
                 </div>
             `;
         });
 
         li.innerHTML = `
-            <strong>${todo.title}</strong>
-            <button onclick="deleteTodo(${todo.id})">Slett liste</button>
-            ${tasksHTML}
+            <strong>${todo.tittel}</strong>
+            <button onclick="slettTodo(${todo.id})">Slett liste</button>
+            ${oppgaverHTML}
         `;
-
-        list.appendChild(li); // Legger til i DOM
+        liste.appendChild(li); // Legger til i listen
     });
 }
 
-// Endrer status på en task (ferdig/ikke ferdig)
-async function toggleTask(todoId, taskIndex) {
-    await fetch(`${API}/todos/${todoId}/tasks/${taskIndex}`, {
-        method: "PATCH" // PATCH = oppdatere del av data
-    });
-
-    getTodos(); // Oppdaterer visning
+async function toggleOppgave(todoId, oppgaveId) {
+    await fetch(`${API}/todos/${todoId}/oppgaver/${oppgaveId}`, { method: "PATCH", headers: headers() }); // Bytter ferdig/ikke ferdig
+    hentTodos(); // Oppdaterer listen
 }
 
-// Sletter en hel todo-liste
-async function deleteTodo(id) {
-    await fetch(API + "/todos/" + id, {
-        method: "DELETE"
-    });
-
-    getTodos(); // Oppdaterer
+async function slettTodo(id) {
+    await fetch(API + "/todos/" + id, { method: "DELETE", headers: headers() }); // Sletter listen
+    hentTodos(); // Oppdaterer listen
 }
 
-// Sletter en enkelt task
-async function deleteTask(todoId, taskIndex) {
-    await fetch(`${API}/todos/${todoId}/tasks/${taskIndex}`, {
-        method: "DELETE"
-    });
-
-    getTodos(); // Oppdaterer
+async function slettOppgave(todoId, oppgaveId) {
+    await fetch(`${API}/todos/${todoId}/oppgaver/${oppgaveId}`, { method: "DELETE", headers: headers() }); // Sletter oppgaven
+    hentTodos(); // Oppdaterer listen
 }
-
-getNotes(); // Henter notater når siden lastes
-getTodos(); // Henter todos når siden lastes
