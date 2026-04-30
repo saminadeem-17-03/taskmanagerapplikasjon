@@ -12,7 +12,7 @@ const SECRET = 'hemmelig_nokkel'; // Nøkkel for JWT
 
 app.use(express.json()); // Leser JSON fra forespørsler
 app.use(cors()); // Tillater alle origins
-app.use(express.static(path.join(__dirname))); // Serverer HTML/CSS/JS
+app.use(express.static(path.join(__dirname, '../klient')));
 
 const db = new Database('database.db'); // Åpner/lager databasefilen
 
