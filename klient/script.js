@@ -25,6 +25,8 @@ async function loggInn() {
     visApp(); // Viser hoved-appen
 }
 
+
+
 async function getNotes() { // Henter alle notater fra backend
     const res = await fetch(API + "/notes"); // Sender GET request til server
     const data = await res.json(); // Gjør responsen om fra JSON til JS-objekt
