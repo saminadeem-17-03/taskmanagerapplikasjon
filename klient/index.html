@@ -7,7 +7,7 @@
 </head>
 <body>
  
-<!-- INNLOGGINGSSIDE -->
+<!-- Innloggingsside (vises når ikke innlogget) -->
 <div id="innloggingSide">
     <h1>Notatapplikasjon</h1>
  
@@ -37,7 +37,7 @@
     </div>
 </div>
  
-<!-- HOVED-APP (skjult til innlogging) -->
+<!-- Hoved-app (skjult til innlogging) -->
 <div id="appSide" style="display:none">
  
     <div id="toppbar">
@@ -48,16 +48,13 @@
         </div>
     </div>
  
-    <!-- Navigasjon -->
+    <!-- Navigasjon mellom notater og todos -->
     <div id="navigasjon">
         <button onclick="visside('notater')" id="navNotater" class="nav-knapp aktiv">Notater</button>
         <button onclick="visside('todos')" id="navTodos" class="nav-knapp">Todo-lister</button>
-        <button onclick="visside('tickets')" id="navTickets" class="nav-knapp">
-            Tickets <span id="ticketTeller" style="display:none" class="teller">0</span>
-        </button>
     </div>
  
-    <!-- NOTATER -->
+    <!-- Notater-side -->
     <div id="side-notater">
         <div class="box">
             <h2>Lag notat</h2>
@@ -72,7 +69,7 @@
         </div>
     </div>
  
-    <!-- TODO-LISTER -->
+    <!-- Todo-side -->
     <div id="side-todos" style="display:none">
         <div class="box">
             <h2>Lag todo-liste</h2>
@@ -91,54 +88,9 @@
         </div>
     </div>
  
-    <!-- TICKETS -->
-    <div id="side-tickets" style="display:none">
-        <div class="box">
-            <h2>Send ticket</h2>
-            <input id="ticketTittel" placeholder="Tittel">
-            <textarea id="ticketInnhold" placeholder="Beskrivelse"></textarea>
-            <select id="ticketMottaker">
-                <option value="">Velg mottaker...</option>
-            </select>
-            <button onclick="sendTicket()">Send ticket</button>
-        </div>
- 
-        <div class="box">
-            <h2>Innboks</h2>
-            <ul id="innboks"></ul>
-        </div>
- 
-        <div class="box">
-            <h2>Sendt</h2>
-            <ul id="sendt"></ul>
-        </div>
-    </div>
- 
-</div>
- 
-<!-- TICKET-MODAL (popup for å lese og svare) -->
-<div id="modal" style="display:none">
-    <div class="modal-boks">
-        <button onclick="lukkModal()" class="lukk-knapp">✕</button>
-        <h2 id="modalTittel"></h2>
-        <p id="modalInfo" class="grå-tekst"></p>
-        <p id="modalInnhold"></p>
- 
-        <div style="margin: 10px 0">
-            <label>Status:</label>
-            <select id="modalStatus" onchange="endreStatus()">
-                <option value="åpen">Åpen</option>
-                <option value="under arbeid">Under arbeid</option>
-                <option value="lukket">Lukket</option>
-            </select>
-        </div>
- 
-        <hr>
-        <h3>Svar</h3>
-        <ul id="svarListe"></ul>
-        <textarea id="svarInput" placeholder="Skriv svar..."></textarea>
-        <button onclick="sendSvar()">Send svar</button>
-    </div>
 </div>
  
 <script src="script.js"></script>
+</body>
+</html>
+ 
