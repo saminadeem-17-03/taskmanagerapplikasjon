@@ -1,5 +1,30 @@
 const API = "http://192.168.20.117:4000"; // URL til backend-serveren (API)
 
+async function loggInn() {
+    const brukernavn = document.getElementById("innBrukernavn").value; // Henter brukernavnet fra input
+    const passord = document.getElementById("innPassord").value; // Henter passordet fra input
+ 
+    const res = await fetch(API + "/login", { // Sender POST til backend
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ brukernavn, passord }) // Sender brukernavn og passord som JSON
+    });
+ 
+    const data = await res.json(); // Leser svaret fra serveren
+ 
+    if (!res.ok) { // Hvis noe gikk galt
+        document.getElementById("innFeil").textContent = data.error; // Viser feilmeldingen
+        return;
+    }
+ 
+    // Lagrer token og brukerinfo i nettleseren
+    localStorage.setItem("token", data.token); // Lagrer JWT-token
+    localStorage.setItem("navn", data.navn); // Lagrer visningsnavn
+    localStorage.setItem("brukernavn", data.brukernavn); // Lagrer brukernavn
+ 
+    visApp(); // Viser hoved-appen
+}
+
 async function getNotes() { // Henter alle notater fra backend
     const res = await fetch(API + "/notes"); // Sender GET request til server
     const data = await res.json(); // Gjør responsen om fra JSON til JS-objekt

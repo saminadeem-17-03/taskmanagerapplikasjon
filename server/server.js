@@ -1,10 +1,13 @@
-const express = require('express'); // Importerer Express (lager server)
-const fs = require('fs'); // File system → lese/skrive filer
-const cors = require('cors'); // Lar frontend snakke med backend
-const path = require("path");
+const express = require('express'); // Importerer Express for å lage server
+const cors = require('cors'); // Tillater frontend å snakke med backend
+const path = require('path'); // Hjelper med filstier
+const bcrypt = require('bcryptjs'); // Brukes til å hashe passord sikkert
+const jwt = require('jsonwebtoken'); // Brukes til å lage innloggings-tokens
+const Database = require('better-sqlite3'); // SQLite3-database (synkron, enkel å bruke)
 
 const app = express(); // Lager Express-app
 const PORT = 4000; // Port serveren kjører på
+const SECRET = "hemmelig_nokkel"; // Hemmelig nøkkel for JWT tokens 
 
 app.use(express.json()); // Lar serveren lese JSON fra requests
 app.use(cors()); // Tillater requests fra frontend (annen origin)

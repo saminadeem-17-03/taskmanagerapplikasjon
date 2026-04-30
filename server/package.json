@@ -1,16 +1,16 @@
 {
-  "name": "taskmanagerapplikasjon",
-  "version": "2.0.0",
-  "description": "taskmanagerapplikasjon med brukersystem og tickets",
+  "name": "notatapplikasjon",
+  "version": "3.0.0",
+  "description": "Notatapplikasjon med brukersystem og tickets",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "better-sqlite3": "^9.4.3",
     "cors": "^2.8.5",
     "express": "^4.18.2",
-    "jsonwebtoken": "^9.0.3",
-    "path": "^0.12.7"
+    "jsonwebtoken": "^9.0.2"
   }
 }
