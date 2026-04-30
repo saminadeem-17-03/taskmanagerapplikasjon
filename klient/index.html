@@ -7,8 +7,38 @@
 </head>
 <body>
 
-<h1>Notatapplikasjon</h1>
-
+    <div id="innloggingSide">
+        <h1>Taskmanagerapplikasjon</h1>
+    
+        <div class="box">
+            <!-- Faner for å bytte mellom innlogging og registrering -->
+            <div class="faner">
+                <button onclick="visFane('loggInn')" id="fanLoggInn" class="fane aktiv">Logg inn</button>
+                <button onclick="visFane('registrer')" id="fanRegistrer" class="fane">Registrer</button>
+            </div>
+    
+            <!-- Innloggingsskjema -->
+            <div id="loggInn">
+                <h2>Logg inn</h2>
+                <input id="innBrukernavn" placeholder="Brukernavn">
+                <input id="innPassord" type="password" placeholder="Passord">
+                <button onclick="loggInn()">Logg inn</button>
+                <p id="innFeil" class="feil"></p>
+            </div>
+    
+            <!-- Registreringsskjema -->
+            <div id="registrer" style="display:none">
+                <h2>Registrer ny bruker</h2>
+                <input id="regNavn" placeholder="Fullt navn">
+                <input id="regBrukernavn" placeholder="Brukernavn">
+                <input id="regPassord" type="password" placeholder="Passord">
+                <button onclick="registrer()">Opprett bruker</button>
+                <p id="regFeil" class="feil"></p>
+                <p id="regOK" class="ok"></p>
+            </div>
+        </div>
+    </div>
+  <!-- lage notat -->   
 <div class="box">
     <h2>Lag notat</h2>
     <input id="title" placeholder="Tittel">

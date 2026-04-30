@@ -118,5 +118,5 @@ app.delete('/todos/:todoId/tasks/:taskIndex', (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log("Server kjører på http://192.168.20.84:" + PORT);
+    console.log("Server kjører på http://192.168.20.117:" + PORT);
 });

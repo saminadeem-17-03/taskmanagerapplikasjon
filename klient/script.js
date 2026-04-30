@@ -1,4 +1,4 @@
-const API = "http://192.168.20.84:4000"; // URL til backend-serveren (API)
+const API = "http://192.168.20.117:4000"; // URL til backend-serveren (API)
 
 async function getNotes() { // Henter alle notater fra backend
     const res = await fetch(API + "/notes"); // Sender GET request til server
