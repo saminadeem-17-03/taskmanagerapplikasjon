@@ -5,7 +5,8 @@
     <title>Taskmanagerapplikasjon</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body> 
+<body>
+ 
 <div id="innloggingSide">
     <h1>Taskmanagerapplikasjon</h1>
     <div class="box">
@@ -31,6 +32,52 @@
         </div>
     </div>
 </div>
+ 
+<div id="appSide" style="display:none">
+    <div id="toppbar">
+        <h1>Taskmangerapplikasjon</h1>
+        <div>
+            <span id="velkomstTekst"></span>
+            <button onclick="loggUt()">Logg ut</button>
+        </div>
+    </div>
+ 
+    <div id="navigasjon">
+        <button onclick="visside('notater')" id="navNotater" class="nav-knapp aktiv">Notater</button>
+        <button onclick="visside('todos')" id="navTodos" class="nav-knapp">Todo-lister</button>
+    </div>
+ 
+    <div id="side-notater">
+        <div class="box">
+            <h2>Lag notat</h2>
+            <input id="notatTittel" placeholder="Tittel">
+            <textarea id="notatInnhold" placeholder="Innhold"></textarea>
+            <button onclick="leggTilNotat()">Lag notat</button>
+        </div>
+        <div class="box">
+            <h2>Mine notater</h2>
+            <ul id="notatListe"></ul>
+        </div>
+    </div>
+ 
+    <div id="side-todos" style="display:none">
+        <div class="box">
+            <h2>Lag todo-liste</h2>
+            <input id="todoTittel" placeholder="Tittel på liste">
+            <div class="oppgave-input">
+                <input id="oppgaveInput" placeholder="Oppgave">
+                <button onclick="leggTilOppgave()">Legg til</button>
+            </div>
+            <ul id="oppgaveListe"></ul>
+            <button onclick="lagreTodo()">Lag todo-liste</button>
+        </div>
+        <div class="box">
+            <h2>Mine todo-lister</h2>
+            <ul id="todoListe"></ul>
+        </div>
+    </div>
+</div>
+ 
 <script src="script.js"></script>
 </body>
 </html>
